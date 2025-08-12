@@ -1,3 +1,6 @@
+# Purpose of this fork
+Improve upon the base plugin, as well as making this plugin shadable for easy api use.
+
 # NPCs
 
 This is a plugin that enables you to create lightweight NPCs.
