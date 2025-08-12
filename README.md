@@ -1,6 +1,8 @@
 # Purpose of this fork
 Improve upon the base plugin, as well as making this plugin shadable for easy api use.
 
+This fork still allows use of old method as a plugin but is not recommended and will now be designed to be shaded.
+
 # NPCs
 
 This is a plugin that enables you to create lightweight NPCs.
@@ -21,17 +23,29 @@ This is a plugin that enables you to create lightweight NPCs.
 
 ```java
 // Get the NPC API
-NpcsApi npcsApi = NpcsPlugin.getApi();
+public class YourPlugin extends JavaPlugin {
+    private NpcsProvider npcsProvider = new NpcsProvider(plugin);
+    
+    public void onEnable() {
+        npcsProvider = new NpcsProvider(this);
+        
+        NpcsApi npcsApi = npcsProvider.getApi();
 
-// Create a global NPC
-Npc npc = npcsApi.createNpc("Test", location, true);
+        // Create a global NPC
+        Npc npc = npcsApi.createNpc("Test", location, true);
 
-// Run an asynchronous task to prevent blocking the main thread 
-Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-    // Get a skin from the Mojang API
-    Skin skin = SkinUtil.getSkin("Notch");
+        // Run an asynchronous task to prevent blocking the main thread 
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            // Get a skin from the Mojang API
+            Skin skin = SkinUtil.getSkin("Notch");
 
-    // Set the NPC's skin
-    npc.setSkin(skin);
-});
+            // Set the NPC's skin
+            npc.setSkin(skin);
+        });
+    }
+    
+    public void onDisable() {
+        npcsProvider.disable();
+    }
+}
 ```
