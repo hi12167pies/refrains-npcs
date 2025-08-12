@@ -1,12 +1,5 @@
 package nz.blair.npcs;
 
-import nz.blair.npcs.listeners.PacketInboundListener;
-import nz.blair.npcs.listeners.PlayerListener;
-import nz.blair.npcs.npcs.Npc;
-import nz.blair.npcs.npcs.NpcFactory;
-import nz.blair.npcs.npcs.NpcManager;
-import nz.blair.npcs.packets.PacketHandlerInjector;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -16,33 +9,26 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 @SuppressWarnings("unused") // This class is used by other plugins
 public final class NpcsPlugin extends JavaPlugin {
-    private static NpcsApi npcsApi;
-    private NpcManager npcManager;
+    private static NpcsProvider provider;
 
     @Override
     public void onEnable() {
-        npcManager = new NpcManager();
-        NpcFactory npcFactory = new NpcFactory(this);
-        npcsApi = new NpcsApi(npcManager, npcFactory);
-
-        PacketInboundListener packetInboundListener = new PacketInboundListener(npcManager);
-        PacketHandlerInjector packetHandlerInjector = new PacketHandlerInjector(packetInboundListener);
-
-        PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new PlayerListener(packetHandlerInjector, npcManager, this), this);
+        provider = new NpcsProvider(this);
     }
 
     @Override
     public void onDisable() {
-        npcManager.getNpcs().forEach(Npc::removeConnections);
+        provider.disable();
     }
 
     /**
      * Get the API singleton.
      *
+     * @deprecated Create your own {@link NpcsProvider} and get api from there
      * @return The API singleton
      */
+    @Deprecated
     public static NpcsApi getApi() {
-        return npcsApi;
+        return provider.getApi();
     }
 }

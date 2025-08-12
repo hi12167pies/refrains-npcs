@@ -21,7 +21,7 @@ This is a plugin that enables you to create lightweight NPCs.
 
 ```java
 // Get the NPC API
-NpcsApi npcsApi = NpcsPlugin.getApi()
+NpcsApi npcsApi = NpcsPlugin.getApi();
 
 // Create a global NPC
 Npc npc = npcsApi.createNpc("Test", location, true);
